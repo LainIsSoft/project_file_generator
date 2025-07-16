@@ -1,0 +1,21 @@
+#### Ignore PROJECT_FILE_GENERATOR
+
+
+
+
+### Programming language folder
+
+
+
+## Batch/...
+
+
+# ignore
+
+batch/*
+
+# keep
+
+!batch/*.bat
+
+
