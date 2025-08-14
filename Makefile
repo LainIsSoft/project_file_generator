@@ -1,6 +1,3 @@
-SHELL := cmd.exe
-.SHELLFLAGS := /C
-
 #	TYPE =
 #			script:
 ##					FILE = 
@@ -17,27 +14,32 @@ SHELL := cmd.exe
 #FILE ?= batch
 
 # Normalize OS name
-ifeq ($(OSS), win)
-OSNAME := windows
+ifeq ($(OS), Windows_NT)
+	#OSNAME := windows
+	SHELL := cmd.exe
+	.SHELLFLAGS := /C
 	ifeq ($(TYPE), execut)
 		ifeq ($(FILE), c)
-		FILE = c
+			FILE = c
 		else ifeq ($(TYPE), py)
-		FILE = python
+			FILE = python
 		endif
 	else
-	FILE = bat
+		FILE = bat
 	endif
-else ifeq ($(OSS), lin)
-OSNAME := linux
+#else ifeq ($(OSS), lin)
+else ifeq ($(OS), linux)
+	#OSNAME := linux
+	SHELL := /bin/sh
+    SHELLFLAG := -c
 	ifeq ($(TYPE), execut)
 		ifeq ($(FILE), c)
-		FILE = c
+			FILE = c
 		else ifeq ($(TYPE), py)
-		FILE = python
+			FILE = python
 		endif
 	else
-	FILE = sh
+		FILE = sh
 	endif
 endif
 
