@@ -21,10 +21,22 @@ Sets/*.txt
 
 # ignore
 
-batch/*
+Batch/*
 
 # keep
 
-!batch/*.bat
+!Batch/batch_template.txt
 
 
+
+
+### OUTPUT
+
+
+# ignore
+
+output/*
+
+# keep
+
+!output/README.md

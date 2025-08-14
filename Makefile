@@ -45,16 +45,12 @@ endif
 
 all: output
 
-recreate_file:
-	@if exist output.bat del output.bat
-	@echo "Using template: $(TEMPLATE)"
-	copy /Y $(TEMPLATE) output.bat >nul
-
 output: do_$(FILE)
 
 do_bat:
-	@echo creating bat file
-
+	@del .\\output\*.bat
+	@copy /Y .\\Batch\\batch_template.txt .\\output\\pfige.bat >nul
+	@echo created bat file
 do_sh:
 	@echo shell script created
 
@@ -67,4 +63,4 @@ do_py:
 .PHONY: clean
 
 clean:
-	del output.bat
+	@del output\\output.bat
