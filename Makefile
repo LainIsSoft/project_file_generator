@@ -28,18 +28,21 @@ ifeq ($(OS), Windows_NT)
 		FILE = bat
 	endif
 #else ifeq ($(OSS), lin)
-else ifeq ($(OS), linux)
-	#OSNAME := linux
-	SHELL := /bin/sh
-    SHELLFLAG := -c
-	ifeq ($(TYPE), execut)
-		ifeq ($(FILE), c)
-			FILE = c
-		else ifeq ($(TYPE), py)
-			FILE = python
+else
+	UNAME_S := $(shell uname -s)
+	ifeq ($(UNAME_S), Linux)
+		#OSNAME := linux
+		SHELL := /bin/sh
+    		SHELLFLAG := -c
+		ifeq ($(TYPE), execut)
+			ifeq ($(FILE), c)
+				FILE = c
+			else ifeq ($(TYPE), py)
+				FILE = python
+			endif
+		else
+			FILE = sh
 		endif
-	else
-		FILE = sh
 	endif
 endif
 
@@ -48,11 +51,14 @@ all: output
 output: do_$(FILE)
 
 do_bat:
-	@del .\\output\*.bat
+	@del .\\output\pfige.*
 	@copy /Y .\\Batch\\batch_template.txt .\\output\\pfige.bat >nul
 	@echo created bat file
 do_sh:
-	@echo shell script created
+	@rm ./output/pfige.*
+	@cp ./Shell/shell_template.txt ./output/pfige.sh
+	@chmod +x ./output/pfige.sh
+	@echo shell script was created
 
 do_c:
 	@echo compile c
@@ -63,4 +69,5 @@ do_py:
 .PHONY: clean
 
 clean:
-	@del output\\output.bat
+	### MISSED SHELL OPTION
+	#@del output\\pfige.*
