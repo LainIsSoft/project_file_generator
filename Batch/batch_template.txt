@@ -2,17 +2,55 @@
 setlocal enabledelayedexpansion
 
 
-:: Input file
+:: Get path of your current location
+:: and path that might be set 
 
-set input="..\\Sets\\Code.txt"
-echo %input%
+set cPath=%~dp0
+set argPath=%~1
+
+:: code source file path
+
+set "sPath=..\\Sets\\Code.txt"
+
+
+REM normalize a file path of the code source file
+
+:: Get directory of first file
+for %%A in ("%cPath%") do set "bbase=%%~dpA"
+
+:: Concatenate and normalize to full path
+for %%B in ("%cPath%%argPath%") do set "resolved_argPath=%%~fB"
+
+:: Concatenate and normalize to full path
+for %%B in ("%cPath%%sPath%") do set "resolved_sPath=%%~fB"
+
+
+REM rPath - a variable where will be stored a path to the result of a program
+
+if [%argPath%] == [] (
+	rem empty
+	set rPath=%cPath%
+) else ( 
+	rem not empty
+	set rPath=%resolved_argPath%
+)
+
+echo File(s) will be created here:
+echo %rPath%
+echo 
+
+REM moving to the specified directory
+
+cd "%rPath%"
+
+REM main function
 
 :: Read input file line by line
 
 set pattern="*"
 set /a ast = 2
 
-for /f "usebackq tokens=*" %%L in (%input%) do (
+for /f "usebackq tokens=*" %%L in ("%resolved_sPath%") do (
 	
 	
 	set line=%%L
@@ -36,7 +74,7 @@ for /f "usebackq tokens=*" %%L in (%input%) do (
 		
 		echo.>!outfile!
 		
-		echo File created
+		echo File !outfile! created
 		
     	) else (
 		
@@ -48,6 +86,8 @@ for /f "usebackq tokens=*" %%L in (%input%) do (
 	)
 )
 
-echo Done.
-pause
+REM return to the initial cPath
 
+cd %cPath%
+
+echo Done.
