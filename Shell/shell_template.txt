@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo "Testing file..."
+sleep 3s
+echo "Successful!"
