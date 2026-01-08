@@ -15,39 +15,48 @@ set "sPath=..\\Sets\\Code.txt"
 
 REM normalize a file path of the code source file
 
-:: Get directory of first file
-for %%A in ("%cPath%") do set "bbase=%%~dpA"
+:: Check if argPath is empty
+
+if not defined argPath (
+	set "argPath=%CD%"
+)
+
+:: Check if argPath is absolute (has drive letter)
+:: Concatenate and normalize to full path
+:: export to folder 
+
+if "%argPath:~1,1%"==":" (
+    rem Absolute path → use as-is
+    for %%B in ("%argPath%") do set "resolved_argPath=%%~fB"
+) else (
+    rem Relative path → resolve against cPath
+    for %%B in ("%CD%\%argPath%") do set "resolved_argPath=%%~fB"
+)
+
+:: Validate output directory exists
+
+if not exist "%resolved_argPath%" (
+	echo ERROR: There is no such directory
+	rem echo %resolved_argPath%
+	exit /b 1
+)
 
 :: Concatenate and normalize to full path
-for %%B in ("%cPath%%argPath%") do set "resolved_argPath=%%~fB"
+:: current working location
 
-:: Concatenate and normalize to full path
 for %%B in ("%cPath%%sPath%") do set "resolved_sPath=%%~fB"
-
 
 REM rPath - a variable where will be stored a path to the result of a program
 
-if [%argPath%] == [] (
-	rem empty
-	set rPath=%cPath%
-) else ( 
-	rem not empty
-	set rPath=%resolved_argPath%
-)
-
+echo.
 echo File(s) will be created here:
-echo %rPath%
-echo 
+echo %resolved_argPath%
+echo.
 
-REM moving to the specified directory
-
-cd "%rPath%"
-
-REM main function
+REM begin MAIN function
 
 :: Read input file line by line
 
-set pattern="*"
 set /a ast = 2
 
 for /f "usebackq tokens=*" %%L in ("%resolved_sPath%") do (
@@ -70,24 +79,23 @@ for /f "usebackq tokens=*" %%L in ("%resolved_sPath%") do (
 		rem Extract filename between the ***
 		
 		set "filename=!line:~4,-4!"
-		set "outfile=!filename!"	
+		set outfile=%resolved_argPath%\!filename!
 		
-		echo.>!outfile!
+		echo.>"!outfile!"
 		
-		echo File !outfile! created
+		echo File !filename! created
 		
     	) else (
 		
 		rem Write line to file if inside a section
 		if defined outfile (
 		
-			>>!outfile! echo(!line!
+			>>"!outfile!" echo(!line!
 		)
 	)
 )
 
-REM return to the initial cPath
+REM end MAIN function
 
-cd %cPath%
-
+echo.
 echo Done.
